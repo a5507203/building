@@ -1,3 +1,4 @@
 1.load object    3 mins
 2.choose texture	15 mins (find a suitable one from google)
 3.create link	10 mins
+4.orbit control	5 mins

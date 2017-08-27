@@ -30,9 +30,9 @@
 		<a href="http://threejs.org" target="_blank" rel="noopener">three.js</a> - OBJLoader test
 		</div>
 
-		<script src="js/three.js"></script>
-		<script src="js/controls/OrbitControls.js"></script>
-		<script src="js/loaders/OBJLoader.js"></script>
+		<script src="js1/three.js"></script>
+		<script src="js1/controls/OrbitControls.js"></script>
+		<script src="js1/loaders/OBJLoader.js"></script>
 
 		<script>
 			var container;
@@ -41,9 +41,6 @@
 			var windowHalfX = window.innerWidth / 2;
 			var windowHalfY = window.innerHeight / 2;
 			var controls;
-
-			var rotateSpd = .5;
-			var zoomSpd = 1.2;
 			init();
 			animate();
 			function init() {
@@ -88,21 +85,11 @@
 					} );
 					object.position.y = - 100;
                     object.rotation.x = -70;
-                    //object.children[0].position.z = 900;
 					scene.add( object );
 				}, onProgress, onError );
 				//
 
 				controls = new THREE.OrbitControls(camera);
-				controls.rotateSpeed = rotateSpd;
-				controls.zoomSpeed = zoomSpd;
-				controls.panSpeed = .8;
-				controls.enableZoom = true;
-				controls.enablePan = true;
-				controls.enableDamping = true;
-				controls.dampingFactor = .22;
-				controls.minDistance = -30;
-				controls.maxDistance = 70;
 				renderer = new THREE.WebGLRenderer();
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
@@ -129,9 +116,6 @@
 			}
 			function render() {
 				    controls.update();
-				// camera.position.x += ( mouseX - camera.position.x ) * .05;
-				// camera.position.y += ( - mouseY - camera.position.y ) * .05;
-				// camera.lookAt( scene.position );
 				    renderer.render( scene, camera );
 			}
 		</script>
