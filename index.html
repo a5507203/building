@@ -72,7 +72,7 @@
 			function init() {
 				var container = document.getElementById( 'container' );
 				camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 5000 );
-				camera.position.set( 0, 0, 650 );
+				camera.position.set( 0, 0, -1000 );
 				scene = new THREE.Scene();
 				scene.background = new THREE.Color().setHSL( 0.6, 0, 1 );
 				scene.fog = new THREE.Fog( scene.background, 1, 5000 );
@@ -152,7 +152,7 @@
                     object.rotation.x = -Math.PI / 2;;
                
                     object.name = "house" ;
-                  
+					object.castShadow = true;  
 					scene.add(object );
 					
 				var gtexture = new THREE.TextureLoader().load( "obj/building/glassCity3.jpg" );
@@ -165,8 +165,9 @@
 				var ground = new THREE.Mesh( groundGeo, groundMat );
 				//ground.rotation.x = -Math.PI/2;
 				//console.log(scene.children);
+
 				object.add( ground );
-				     object.position.y = -100;
+				object.position.y = -100;
 				     
 				       console.log(object);
 				}, onProgress );
