@@ -1,7 +1,7 @@
-1.load object    3 mins
-2.choose texture	15 mins (find a suitable one from google)
-3.create link	10 mins
-4.orbit control	5 mins
-5.orbit control update 2 mins
-5.add sky, sunlight, directional light	30mins	
-6.add ground 	10mins
+1.load object    		3mins
+2.choose texture		15mins (find a suitable one from google)
+3.create link			10mins
+4.orbit controls		5mins
+5.orbit control update		2mins
+5.add sky(size, color)		30mins
+6.add ground(size, color)	10mins
