@@ -57,9 +57,9 @@
 				
 
 				var textureCube = new THREE.CubeTextureLoader()
-					.setPath( '/images/' )
+					.setPath( '/' )
 					.load( [ 'miramar_rt.jpg', 'miramar_lf.jpg', 'miramar_up.jpg', 'miramar_dn.jpg', 'miramar_bk.jpg', 'miramar_ft.jpg' ] );
-				scene = new THREE.Scene();
+									scene = new THREE.Scene();
 				scene.background = textureCube;
 				textureCube.format = THREE.RGBFormat;
 				textureCube.mapping = THREE.CubeReflectionMapping;
