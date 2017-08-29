@@ -6,4 +6,6 @@
 5.add sky(size, color)			30mins
 6.add ground(size, color)		10mins
 7.add shadow(need to change light)	30mins
-8.glass material of building		15mins 
+8.glass material of building		15mins
+9.environment mapping on reflection	15mins
+
