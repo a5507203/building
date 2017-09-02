@@ -32,6 +32,10 @@ THREE.DragControls = function ( _objects, _camera, _domElement ) {
 		_domElement.addEventListener( 'mousedown', onDocumentMouseDown, false );
 		_domElement.addEventListener( 'mouseup', onDocumentMouseUp, false );
 
+		_domElement.addEventListener( 'touchmove', onDocumentTouchmove, false );
+		_domElement.addEventListener( 'touchstart', onDocumentTouchstart, false );
+		_domElement.addEventListener( 'touchend', onDocumentTouchend, false );
+
 	}
 
 	function deactivate() {
@@ -39,6 +43,10 @@ THREE.DragControls = function ( _objects, _camera, _domElement ) {
 		_domElement.removeEventListener( 'mousemove', onDocumentMouseMove, false );
 		_domElement.removeEventListener( 'mousedown', onDocumentMouseDown, false );
 		_domElement.removeEventListener( 'mouseup', onDocumentMouseUp, false );
+
+		_domElement.removeEventListener( 'touchmove', onDocumentTouchmove, false );
+		_domElement.removeEventListener( 'touchstart', onDocumentTouchstart, false );
+		_domElement.removeEventListener( 'touchend', onDocumentTouchend, false );
 
 	}
 
@@ -107,6 +115,33 @@ THREE.DragControls = function ( _objects, _camera, _domElement ) {
 
 	}
 
+	function onDocumentTouchmove( event ) {
+
+		event.preventDefault();
+
+		var rect = _domElement.getBoundingClientRect();
+
+		_mouse.x = + ( (event.targetTouches[ 0 ].pageX - rect.left) / rect.width ) * 2 - 1;
+		_mouse.y = - ( (event.targetTouches[ 0 ].pageY - rect.top) / rect.height ) * 2 + 1;
+		
+		_raycaster.setFromCamera( _mouse, _camera );
+
+		if ( _selected && scope.enabled ) {
+
+			if ( _raycaster.ray.intersectPlane( _plane, _intersection ) ) {
+
+				_selected.position.copy( _intersection.sub( _offset ) );
+
+			}
+
+			scope.dispatchEvent( { type: 'drag', object: _selected } );
+
+			return;
+
+		}
+
+	}
+
 	function onDocumentMouseDown( event ) {
 
 		event.preventDefault();
@@ -130,11 +165,85 @@ THREE.DragControls = function ( _objects, _camera, _domElement ) {
 			scope.dispatchEvent( { type: 'dragstart', object: _selected } );
 
 		}
+		
+	}
 
+	function onDocumentTouchstart( event ) {
+
+		event.preventDefault();
+
+		var rect = _domElement.getBoundingClientRect();
+
+		_mouse.x = + ( (event.targetTouches[ 0 ].pageX - rect.left) / rect.width ) * 2 - 1;
+		_mouse.y = - ( (event.targetTouches[ 0 ].pageY - rect.top) / rect.height ) * 2 + 1;
+
+		_raycaster.setFromCamera( _mouse, _camera );
+
+		var intersects = _raycaster.intersectObjects( _objects );
+
+		if ( intersects.length > 0 ) {
+
+			var object = intersects[ 0 ].object;
+
+			_plane.setFromNormalAndCoplanarPoint( _camera.getWorldDirection( _plane.normal ), object.position );
+
+			if ( _hovered !== object ) {
+
+				scope.dispatchEvent( { type: 'hoveron', object: object } );
+
+				_domElement.style.cursor = 'pointer';
+				_hovered = object;
+
+			}
+
+		} else {
+
+			if ( _hovered !== null ) {
+
+				scope.dispatchEvent( { type: 'hoveroff', object: _hovered } );
+
+				_domElement.style.cursor = 'auto';
+				_hovered = null;
+
+			}
+
+		}
+
+		if ( intersects.length > 0 ) {
+
+			_selected = intersects[ 0 ].object;
+
+			if ( _raycaster.ray.intersectPlane( _plane, _intersection ) ) {
+
+				_offset.copy( _intersection ).sub( _selected.position );
+
+			}
+
+			_domElement.style.cursor = 'move';
+
+			scope.dispatchEvent( { type: 'dragstart', object: _selected } );
+
+		}
 
 	}
 
 	function onDocumentMouseUp( event ) {
+
+		event.preventDefault();
+
+		if ( _selected ) {
+
+			scope.dispatchEvent( { type: 'dragend', object: _selected } );
+
+			_selected = null;
+
+		}
+
+		_domElement.style.cursor = 'auto';
+
+	}
+
+	function onDocumentTouchend( event ) {
 
 		event.preventDefault();
 
