@@ -40,12 +40,17 @@
 		<script src="js/Detector.js"></script>
 		<script src="js/libs/stats.min.js"></script>
 		<script src="js/controls/OrbitControls.js"></script>
+		<script src="js/controls/DragControls.js"></script>
 		<script>
 			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 			var camera, scene, renderer, dirLight, dirLightHeper, hemiLight, hemiLightHelper;
 			var stats;
 			var clock = new THREE.Clock();
 			var controls;
+			var preTimer = 0;
+			var DELTA_SCALE = 10;
+			var count = 0;
+			var initAnimiation = true;
 			init();
 			animate();
 			function init() {
@@ -57,9 +62,9 @@
 				
 
 				var textureCube = new THREE.CubeTextureLoader()
-					.setPath( 'images/' )
+					.setPath( '/' )
 					.load( [ 'miramar_rt.jpg', 'miramar_lf.jpg', 'miramar_up.jpg', 'miramar_dn.jpg', 'miramar_bk.jpg', 'miramar_ft.jpg' ] );
-									scene = new THREE.Scene();
+				scene = new THREE.Scene();
 				scene.background = textureCube;
 				textureCube.format = THREE.RGBFormat;
 				textureCube.mapping = THREE.CubeReflectionMapping;
@@ -116,6 +121,8 @@
 				
 
 				// MODEL
+				controls = new THREE.OrbitControls(camera);
+				controls.maxDistance = 3000;
 				var loader = new THREE.ImageLoader( manager );
 				loader.load( 'obj/building/glassCity3.jpg', function ( image ) {
 					texture.image = image;
@@ -124,6 +131,7 @@
 				var loader = new THREE.OBJLoader( manager );
 				loader.load( 'obj/building/city.obj', function ( object ) {
 					object.traverse( function ( child ) {
+
 						if ( child instanceof THREE.Mesh ) {
 							child.material.map = texture;
 							child.material.specular.setRGB(1, 1, 1);
@@ -133,6 +141,12 @@
 							child.material.envMap = textureCube;
 							child.castShadow = true;
 							child.receiveShadow = true;
+							child.geometry.computeBoundingSphere();
+							var pos = child.geometry.boundingSphere.center;
+							child.position.x = pos.x*10;
+							child.position.y = pos.y*10;
+							child.position.z = pos.z*10;
+								//console.log(child.position);
 						}
 					} );
                     object.rotation.x = -Math.PI / 2;
@@ -140,13 +154,16 @@
 					object.castShadow = true;  
 					scene.add(object );
 					object.position.y = -101;
+					//object.children[0].position.y = -101;
+				//	console.log(object.children[0].geometry.boundingSphere);
+		
+				var dragControls = new THREE.DragControls( object.children, camera, renderer.domElement );
+				dragControls.addEventListener( 'dragstart', function ( event ) { controls.enabled = false; } );
+				dragControls.addEventListener( 'dragend', function ( event ) { controls.enabled = true; } );
+					//console.log(object);
 				}, onProgress );
 		
-		
-	
 
-				controls = new THREE.OrbitControls(camera);
-				controls.maxDistance = 3000;
 				
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
@@ -159,6 +176,8 @@
 				// STATS
 				stats = new Stats();
 				container.appendChild( stats.dom );
+
+
 				//
 				window.addEventListener( 'resize', onWindowResize, false );
 			}
@@ -169,12 +188,31 @@
 			}
 
 			function animate() {
+
+				//console.log(house.children);
 				requestAnimationFrame( animate );
 				controls.update();
 				render();
 				stats.update();
 			}
 			function render() {
+				var timer = Date.now() * 0.001;
+				var diff = timer - preTimer;
+				var house =scene.getObjectByName("house");
+				//console.log(diff);
+				if(house != null && diff>0.1 && initAnimiation ==true && count<150){
+				//	console.log(house.children);
+					var children = house.children;
+					for(var i = 0 ; i < children.length ; i++){
+						var deltaPos = children[i].geometry.boundingSphere.center;
+						children[i].position.x -= deltaPos.x/15;
+						children[i].position.y -= deltaPos.y/15;
+						children[i].position.z -= deltaPos.z/15;
+					}
+					count++;
+					preTimer = timer;
+				}
+				//preTimer = timer;
 				renderer.render( scene, camera );
 			}
 		</script>
