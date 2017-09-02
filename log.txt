@@ -8,4 +8,6 @@
 7.add shadow(need to change light)	30mins
 8.glass material of building		15mins
 9.environment mapping on reflection	15mins
+10.draggable object			10mins
+11.initial animate			30mins
 
