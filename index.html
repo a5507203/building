@@ -200,7 +200,7 @@
 				var diff = timer - preTimer;
 				var house =scene.getObjectByName("house");
 				//console.log(diff);
-				if(house != null && diff>0.1 && initAnimiation ==true && count<150){
+				if(house != null && diff>0.05 && initAnimiation ==true && count<150){
 				//	console.log(house.children);
 					var children = house.children;
 					for(var i = 0 ; i < children.length ; i++){
